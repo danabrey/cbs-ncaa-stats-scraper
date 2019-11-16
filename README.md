@@ -2,6 +2,8 @@
 
 This PHP package scrapes stats for a college football player from CBS.
 
+[![Build Status](https://travis-ci.com/danabrey/cbs-ncaa-stats-scraper.svg?branch=master)](https://travis-ci.com/danabrey/cbs-ncaa-stats-scraper)
+
 ## Installation
 
 Via Composer:
