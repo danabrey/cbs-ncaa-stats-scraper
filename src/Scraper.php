@@ -82,6 +82,9 @@ class Scraper
         $name = $this->extractPlayerName($crawler);
         $player->setName($name);
 
+        $college = $this->extractPlayerCollege($crawler);
+        $player->setCollege($college);
+
         $seasons = $this->buildSeasonDataFromCrawler($crawler);
         $player->setSeasons($seasons);
 
@@ -143,6 +146,12 @@ class Scraper
     private function extractPlayerPosition(Crawler $crawler): string
     {
         $positionElement = $crawler->filter('div.name h1 span.playerPosition');
+        return $positionElement->text();
+    }
+
+    private function extractPlayerCollege(Crawler $crawler): string
+    {
+        $positionElement = $crawler->filter('div.name h3.superText');
         return $positionElement->text();
     }
 }

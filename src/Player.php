@@ -19,6 +19,11 @@ class Player
     protected $position;
 
     /**
+     * @var string
+     */
+    protected $college;
+
+    /**
      * @var array
      */
     protected $seasons = [];
@@ -85,5 +90,21 @@ class Player
     public function setPosition(string $position): void
     {
         $this->position = $position;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCollege(): string
+    {
+        return $this->college;
+    }
+
+    /**
+     * @param string $college
+     */
+    public function setCollege(string $college): void
+    {
+        $this->college = $college;
     }
 }

@@ -49,6 +49,15 @@ class ScraperTest extends TestCase
         $this->assertEquals('WR', $position);
     }
 
+    public function test_can_extract_college()
+    {
+        $crawler = new Crawler();
+        $html = $this->htmlResponse;
+        $crawler->addHtmlContent($html);
+        $college = $this->invokeMethod($this->scraper, 'extractPlayerCollege', [$crawler]);
+        $this->assertEquals('Alabama Crimson Tide', $college);
+    }
+
     public function test_can_extract_season_stats()
     {
         $crawler = new Crawler();
