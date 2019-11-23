@@ -1,16 +1,16 @@
 <?php
 
+use DanAbrey\CBSNCAAStatsScraper\Crawler\PlayerCrawler;
 use DanAbrey\CBSNCAAStatsScraper\PlayerSeason;
-use DanAbrey\CBSNCAAStatsScraper\Scraper;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class ScraperTest extends TestCase
+class PlayerCrawlerTest extends TestCase
 {
     /**
-     * @var Scraper
+     * @var PlayerCrawler
      */
-    private $scraper;
+    private $playerCrawler;
     /**
      * @var string
      */
@@ -18,17 +18,8 @@ class ScraperTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->scraper = new Scraper();
+        $this->playerCrawler = new PlayerCrawler();
         $this->htmlResponse = file_get_contents('./tests/fixtures/jerry-jeudy.html');
-    }
-
-    private function invokeMethod(&$object, $methodName, array $parameters = array())
-    {
-        $reflection = new ReflectionClass(get_class($object));
-        $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
-
-        return $method->invokeArgs($object, $parameters);
     }
 
     public function test_can_extract_name()
@@ -36,8 +27,7 @@ class ScraperTest extends TestCase
         $crawler = new Crawler();
         $html = $this->htmlResponse;
         $crawler->addHtmlContent($html);
-        $name = $this->invokeMethod($this->scraper, 'extractPlayerName', [$crawler]);
-        $this->assertEquals('Jerry Jeudy', $name);
+        $this->assertEquals('Jerry Jeudy', $this->playerCrawler->extractPlayerName($crawler));
     }
 
     public function test_can_extract_position()
@@ -45,8 +35,7 @@ class ScraperTest extends TestCase
         $crawler = new Crawler();
         $html = $this->htmlResponse;
         $crawler->addHtmlContent($html);
-        $position = $this->invokeMethod($this->scraper, 'extractPlayerPosition', [$crawler]);
-        $this->assertEquals('WR', $position);
+        $this->assertEquals('WR', $this->playerCrawler->extractPlayerPosition($crawler));
     }
 
     public function test_can_extract_college()
@@ -54,8 +43,7 @@ class ScraperTest extends TestCase
         $crawler = new Crawler();
         $html = $this->htmlResponse;
         $crawler->addHtmlContent($html);
-        $college = $this->invokeMethod($this->scraper, 'extractPlayerCollege', [$crawler]);
-        $this->assertEquals('Alabama Crimson Tide', $college);
+        $this->assertEquals('Alabama Crimson Tide', $this->playerCrawler->extractPlayerCollege($crawler));
     }
 
     public function test_can_extract_season_stats()
@@ -64,7 +52,7 @@ class ScraperTest extends TestCase
         $html = $this->htmlResponse;
         $crawler->addHtmlContent($html);
         /** @var PlayerSeason[] $seasons */
-        $seasons = $this->invokeMethod($this->scraper, 'buildSeasonDataFromCrawler', [$crawler]);
+        $seasons = $this->playerCrawler->buildSeasonDataFromCrawler($crawler);
         $this->assertIsArray($seasons);
         $this->assertArrayHasKey(2017, $seasons);
         $this->assertArrayHasKey(2018, $seasons);
