@@ -19,52 +19,114 @@ class PlayerCrawlerTest extends TestCase
     protected function setUp(): void
     {
         $this->playerCrawler = new PlayerCrawler();
-        $this->htmlResponse = file_get_contents('./tests/fixtures/jerry-jeudy.html');
     }
 
-    public function test_can_extract_name()
+    public function players()
     {
-        $crawler = new Crawler();
-        $html = $this->htmlResponse;
-        $crawler->addHtmlContent($html);
-        $this->assertEquals('Jerry Jeudy', $this->playerCrawler->extractPlayerName($crawler));
+        return [
+            [
+                file_get_contents('./tests/fixtures/jerry-jeudy.html'),
+                'Jerry Jeudy',
+                'WR',
+                'Alabama Crimson Tide',
+                [2017, 2018, 2019],
+            ],
+            [
+            file_get_contents('./tests/fixtures/tua-tagovailoa.html'),
+                'Tua Tagovailoa',
+                'QB',
+                'Alabama Crimson Tide',
+                [2017, 2018, 2019],
+            ],
+            [
+                file_get_contents('./tests/fixtures/jonathan-taylor.html'),
+                'Jonathan Taylor',
+                'RB',
+                'Wisconsin Badgers',
+                [2017, 2018, 2019],
+            ],
+        ];
     }
 
-    public function test_can_extract_position()
+    /**
+     * @dataProvider players
+     * @param $html
+     * @param $name
+     * @param $position
+     * @param $college
+     * @param $seasons
+     */
+    public function test_can_extract_name($html, $name, $position, $college, $seasons)
     {
         $crawler = new Crawler();
-        $html = $this->htmlResponse;
         $crawler->addHtmlContent($html);
-        $this->assertEquals('WR', $this->playerCrawler->extractPlayerPosition($crawler));
+        $this->assertEquals($name, $this->playerCrawler->extractPlayerName($crawler));
     }
 
-    public function test_can_extract_college()
+    /**
+     * @dataProvider players
+     * @param $html
+     * @param $name
+     * @param $position
+     * @param $college
+     * @param $seasons
+     */
+    public function test_can_extract_position($html, $name, $position, $college, $seasons)
     {
         $crawler = new Crawler();
-        $html = $this->htmlResponse;
         $crawler->addHtmlContent($html);
-        $this->assertEquals('Alabama Crimson Tide', $this->playerCrawler->extractPlayerCollege($crawler));
+        $this->assertEquals($position, $this->playerCrawler->extractPlayerPosition($crawler));
     }
 
-    public function test_can_extract_season_stats()
+    /**
+     * @dataProvider players
+     * @param $html
+     * @param $name
+     * @param $position
+     * @param $college
+     * @param $seasons
+     */
+    public function test_can_extract_college($html, $name, $position, $college, $seasons)
     {
         $crawler = new Crawler();
-        $html = $this->htmlResponse;
         $crawler->addHtmlContent($html);
-        /** @var PlayerSeason[] $seasons */
-        $seasons = $this->playerCrawler->buildSeasonDataFromCrawler($crawler);
-        $this->assertIsArray($seasons);
-        $this->assertArrayHasKey(2017, $seasons);
-        $this->assertArrayHasKey(2018, $seasons);
-        $this->assertArrayHasKey(2019, $seasons);
+        $this->assertEquals($college, $this->playerCrawler->extractPlayerCollege($crawler));
+    }
 
-        $this->assertInstanceOf(PlayerSeason::class, $seasons[2017]);
+    /**
+     * @dataProvider players
+     * @param $html
+     * @param $name
+     * @param $position
+     * @param $college
+     * @param $seasons
+     */
+    public function test_can_extract_seasons($html, $name, $position, $college, $seasons)
+    {
+        $crawler = new Crawler();
+        $crawler->addHtmlContent($html);
+        /** @var PlayerSeason[] $crawledSeasons */
+        $crawledSeasons = $this->playerCrawler->buildSeasonDataFromCrawler($crawler);
+        $this->assertIsArray($crawledSeasons);
 
-        $this->assertSame(2019, $seasons[2019]->getYear());
-        $this->assertSame('Alabama', $seasons[2019]->getTeam());
-        $this->assertSame(9, $seasons[2019]->getGamesPlayed());
-        $this->assertSame(57, $seasons[2019]->getReceptions());
-        $this->assertSame(753, $seasons[2019]->getReceivingYards());
+        foreach($seasons as $season) {
+            $this->assertArrayHasKey($season, $crawledSeasons);
+            $this->assertInstanceOf(PlayerSeason::class, $crawledSeasons[$season]);
+        }
+    }
+
+    public function test_can_extract_season_data()
+    {
+        $crawler = new Crawler();
+        $crawler->addHtmlContent(file_get_contents('./tests/fixtures/jerry-jeudy.html'));
+        /** @var PlayerSeason[] $crawledSeasons */
+        $crawledSeasons = $this->playerCrawler->buildSeasonDataFromCrawler($crawler);
+
+        $this->assertSame(2019, $crawledSeasons[2019]->getYear());
+        $this->assertSame('Alabama', $crawledSeasons[2019]->getTeam());
+        $this->assertSame(9, $crawledSeasons[2019]->getGamesPlayed());
+        $this->assertSame(57, $crawledSeasons[2019]->getReceptions());
+        $this->assertSame(753, $crawledSeasons[2019]->getReceivingYards());
     }
 
     public function throws_exception_when_player_not_found()
