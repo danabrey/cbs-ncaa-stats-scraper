@@ -15,21 +15,23 @@ class PlayerCrawler
      * Values represent related name of property on PlayerSeason DTO
      */
     private const DATATABLE_PARSER_MAP = [
-        'Rushing' => [
+        'Rushing Stats' => [
             0 => 'team',
             1 => 'gamesPlayed',
             2 => 'rushingAttempts',
             3 => 'rushingYards',
-            4 => 'rushingTouchdowns'
+            4 => 'averageRushingYards',
+            5 => 'rushingTouchdowns'
         ],
-        'Receiving' => [
+        'Receiving Stats' => [
             0 => 'team',
             1 => 'gamesPlayed',
             2 => 'receptions',
             3 => 'receivingYards',
-            4 => 'receivingTouchdowns'
+            4 => 'averageReceivingYards',
+            5 => 'receivingTouchdowns'
         ],
-        'Return' => [
+        'Return Stats' => [
             0 => 'team',
             1 => 'gamesPlayed',
             2 => 'puntReturns',
@@ -75,7 +77,7 @@ class PlayerCrawler
                 continue;
             }
 
-            $rows = $tableCrawler->filter('tr')->slice(2, -1);
+            $rows = $tableCrawler->filter('tr')->slice(2);
 
             foreach($rows as $row) {
                 $rowCrawler = new Crawler($row);
