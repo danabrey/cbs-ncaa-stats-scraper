@@ -25,25 +25,18 @@ class PlayerCrawlerTest extends TestCase
     {
         return [
             [
-                file_get_contents('./tests/fixtures/jerry-jeudy.html'),
-                'Jerry Jeudy',
+                file_get_contents('./tests/fixtures/george-pickens.html'),
+                'George Pickens',
                 'WR',
-                'Alabama Crimson Tide',
-                [2017, 2018, 2019],
+                'Georgia Bulldogs',
+                [2019, 2020],
             ],
             [
             file_get_contents('./tests/fixtures/tua-tagovailoa.html'),
-                'Tua Tagovailoa',
-                'QB',
-                'Alabama Crimson Tide',
-                [2017, 2018, 2019],
-            ],
-            [
-                file_get_contents('./tests/fixtures/jonathan-taylor.html'),
-                'Jonathan Taylor',
+                'Bijan Robinson',
                 'RB',
-                'Wisconsin Badgers',
-                [2017, 2018, 2019],
+                'Texas Longhorns',
+                [2020],
             ],
         ];
     }
@@ -118,15 +111,15 @@ class PlayerCrawlerTest extends TestCase
     public function test_can_extract_season_data()
     {
         $crawler = new Crawler();
-        $crawler->addHtmlContent(file_get_contents('./tests/fixtures/jerry-jeudy.html'));
+        $crawler->addHtmlContent(file_get_contents('./tests/fixtures/george-pickens.html'));
         /** @var PlayerSeason[] $crawledSeasons */
         $crawledSeasons = $this->playerCrawler->buildSeasonDataFromCrawler($crawler);
 
         $this->assertSame(2019, $crawledSeasons[2019]->getYear());
-        $this->assertSame('Alabama', $crawledSeasons[2019]->getTeam());
-        $this->assertSame(9, $crawledSeasons[2019]->getGamesPlayed());
-        $this->assertSame(57, $crawledSeasons[2019]->getReceptions());
-        $this->assertSame(753, $crawledSeasons[2019]->getReceivingYards());
+        $this->assertSame('Georgia', $crawledSeasons[2019]->getTeam());
+        $this->assertSame(12, $crawledSeasons[2019]->getGamesPlayed());
+        $this->assertSame(49, $crawledSeasons[2019]->getReceptions());
+        $this->assertSame(727, $crawledSeasons[2019]->getReceivingYards());
     }
 
     public function throws_exception_when_player_not_found()
