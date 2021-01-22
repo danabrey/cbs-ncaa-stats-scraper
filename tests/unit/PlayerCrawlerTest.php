@@ -32,7 +32,7 @@ class PlayerCrawlerTest extends TestCase
                 [2019, 2020],
             ],
             [
-            file_get_contents('./tests/fixtures/tua-tagovailoa.html'),
+            file_get_contents('./tests/fixtures/bijan-robinson.html'),
                 'Bijan Robinson',
                 'RB',
                 'Texas Longhorns',
