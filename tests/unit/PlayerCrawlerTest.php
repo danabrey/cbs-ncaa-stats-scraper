@@ -7,14 +7,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class PlayerCrawlerTest extends TestCase
 {
-    /**
-     * @var PlayerCrawler
-     */
-    private $playerCrawler;
-    /**
-     * @var string
-     */
-    private $htmlResponse;
+    private PlayerCrawler $playerCrawler;
 
     protected function setUp(): void
     {
@@ -115,11 +108,11 @@ class PlayerCrawlerTest extends TestCase
         /** @var PlayerSeason[] $crawledSeasons */
         $crawledSeasons = $this->playerCrawler->buildSeasonDataFromCrawler($crawler);
 
-        $this->assertSame(2019, $crawledSeasons[2019]->getYear());
-        $this->assertSame('Georgia', $crawledSeasons[2019]->getTeam());
-        $this->assertSame(12, $crawledSeasons[2019]->getGamesPlayed());
-        $this->assertSame(49, $crawledSeasons[2019]->getReceptions());
-        $this->assertSame(727, $crawledSeasons[2019]->getReceivingYards());
+        $this->assertSame(2019, $crawledSeasons[2019]->year);
+        $this->assertSame('Georgia', $crawledSeasons[2019]->team);
+        $this->assertSame(12, $crawledSeasons[2019]->gamesPlayed);
+        $this->assertSame(49, $crawledSeasons[2019]->receptions);
+        $this->assertSame(727, $crawledSeasons[2019]->receivingYards);
     }
 
     public function throws_exception_when_player_not_found()

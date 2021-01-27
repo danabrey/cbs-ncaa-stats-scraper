@@ -20,21 +20,21 @@ class Scraper
         $client = new Client();
         $crawler = $client->request('GET', $url);
         $player = new Player();
-        $player->setId($playerId);
+        $player->id = $playerId;
 
         $playerCrawler = new PlayerCrawler();
 
         $position = $playerCrawler->extractPlayerPosition($crawler);
-        $player->setPosition($position);
+        $player->position = $position;
 
         $name = $playerCrawler->extractPlayerName($crawler);
-        $player->setName($name);
+        $player->name = $name;
 
         $college = $playerCrawler->extractPlayerCollege($crawler);
-        $player->setCollege($college);
+        $player->college = $college;
 
         $seasons = $playerCrawler->buildSeasonDataFromCrawler($crawler);
-        $player->setSeasons($seasons);
+        $player->seasons = $seasons;
 
         return $player;
     }
